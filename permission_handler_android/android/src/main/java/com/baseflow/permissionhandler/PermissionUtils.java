@@ -94,6 +94,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_AUDIO;
             case Manifest.permission.SCHEDULE_EXACT_ALARM:
                 return PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
+            case Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED:
+                return PermissionConstants.PERMISSION_GROUP_READ_MEDIA_VISUAL_USER_SELECTED;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -355,6 +357,10 @@ public class PermissionUtils {
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
+            case PermissionConstants.PERMISSION_GROUP_READ_MEDIA_VISUAL_USER_SELECTED:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+                break;
             case PermissionConstants.PERMISSION_GROUP_UNKNOWN:
                 return null;
         }
@@ -410,17 +416,17 @@ public class PermissionUtils {
      * State machine diagram:
      * <p>
      * Dismissed
-     *    ┌┐
+     * ┌┐
      * ┌──┘▼─────┐  Granted ┌───────┐
      * │Not asked├──────────►Granted│
      * └─┬───────┘          └─▲─────┘
-     *   │           Granted  │
-     *   │Denied  ┌───────────┘
-     *   │        │
+     * │           Granted  │
+     * │Denied  ┌───────────┘
+     * │        │
      * ┌─▼────────┴┐        ┌────────────────────────────────┐
      * │Denied once├────────►Denied twice(permanently denied)│
      * └──▲┌───────┘ Denied └────────────────────────────────┘
-     *    └┘
+     * └┘
      * Dismissed
      * <p>
      * Scenario table listing output of
@@ -456,9 +462,9 @@ public class PermissionUtils {
      */
     @PermissionConstants.PermissionStatus
     static int toPermissionStatus(
-        final @Nullable Activity activity,
-        final String permissionName,
-        int grantResult) {
+            final @Nullable Activity activity,
+            final String permissionName,
+            int grantResult) {
 
         if (grantResult == PackageManager.PERMISSION_DENIED) {
             return determineDeniedVariant(activity, permissionName);
@@ -484,8 +490,8 @@ public class PermissionUtils {
     @NonNull
     @PermissionConstants.PermissionStatus
     static Integer strictestStatus(
-        final @Nullable @PermissionConstants.PermissionStatus Integer statusA,
-        final @Nullable @PermissionConstants.PermissionStatus Integer statusB) {
+            final @Nullable @PermissionConstants.PermissionStatus Integer statusA,
+            final @Nullable @PermissionConstants.PermissionStatus Integer statusB) {
 
         final Collection<@PermissionConstants.PermissionStatus Integer> statuses = new HashSet<>();
         statuses.add(statusA);
@@ -506,8 +512,8 @@ public class PermissionUtils {
      */
     @PermissionConstants.PermissionStatus
     static int determineDeniedVariant(
-        final @Nullable Activity activity,
-        final String permissionName) {
+            final @Nullable Activity activity,
+            final String permissionName) {
 
         if (activity == null) {
             return PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -536,8 +542,8 @@ public class PermissionUtils {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     static boolean isNeverAskAgainSelected(
-        @NonNull final Activity activity,
-        final String name) {
+            @NonNull final Activity activity,
+            final String name) {
 
         final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, name);
         return !shouldShowRequestPermissionRationale;

@@ -319,6 +319,9 @@ class Permission {
   /// Permission for reading from and writing to the device's calendar.
   static const calendarFullAccess = Permission._(37);
 
+  /// READ_MEDIA_VISUAL_USER_SELECTED
+  static const readMediaVisualUserSelected = Permission._(38);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     // ignore: deprecated_member_use_from_same_package
@@ -360,6 +363,7 @@ class Permission {
     sensorsAlways,
     calendarWriteOnly,
     calendarFullAccess,
+    readMediaVisualUserSelected,
   ];
 
   static const List<String> _names = <String>[
@@ -401,6 +405,7 @@ class Permission {
     'sensorsAlways',
     'calendarWriteOnly',
     'calendarFullAccess',
+    'readMediaVisualUserSelected',
   ];
 
   @override
